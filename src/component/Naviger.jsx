@@ -10,10 +10,9 @@ const Naviger = () => {
       <div className="row">
         <div className="col-lg-4 d-flex align-items-stretch">
           <div className="content">
-            <h3>Why Choose Medilab?</h3>
+            <h3>Why Choose Protrio?</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
-              Asperiores dolores sed et. Tenetur quia eos. Autem tempore quibusdam vel necessitatibus optio ad corporis.
+            Notre société offre une solution de réservation en ligne facile et pratique pour les services de décoration, plomberie et électricité, permettant aux clients de planifier rapidement et efficacement leurs projets domestiques avec des professionnels qualifiés
             </p>
             <div className="text-center">
               <a href="#" className="more-btn">Learn More <i className="bx bx-chevron-right" /></a>
@@ -55,7 +54,9 @@ const Naviger = () => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-xl-5 col-lg-6 video-box d-flex justify-content-center align-items-stretch position-relative">
-          <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" className="glightbox play-btn mb-4" />
+          <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJXyVq9389rMe3BThExK5j_jAQyWIrCz19HQ&s" className="glightbox  mb-4">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJXyVq9389rMe3BThExK5j_jAQyWIrCz19HQ&s" alt="Description of the image" />
+</a>
         </div>
         <div className="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
           <h3>Enim quis est voluptatibus aliquid consequatur fugiat</h3>
