@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import { Link, Routes, Route, BrowserRouter as Router } from 'react-router-dom';
+import Login from './Login';
 
 const Header = () => {
   const [services, setServices] = useState([]);
-  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -18,10 +18,6 @@ const Header = () => {
 
     fetchServices();
   }, []);
-
-  const handleConnecterClick = () => {
-    navigate('/Login'); // Navigate to the login route when "Connecter" is clicked
-  };
 
   return (
     <div>
@@ -38,7 +34,7 @@ const Header = () => {
           <h1 className="logo me-auto"><a href="index.html">Protrio</a></h1>
           <nav id="navbar" className="navbar order-last order-lg-0">
             <ul>
-              <li><a className="nav-link scrollto active" href="#hero">Acceuil</a></li>
+              <li><Link to="/"className="nav-link scrollto active">Acceuil</Link></li>
               <li><a className="nav-link scrollto" href="#about">Qui nous sommes</a></li>
               <li><a className="nav-link scrollto" href="#departments">Réservation</a></li>
               <li><a className="nav-link scrollto" href="#doctors">votre avis</a></li>
@@ -54,24 +50,20 @@ const Header = () => {
             </ul>
             <i className="bi bi-list mobile-nav-toggle" />
           </nav>
-          {/* Use handleConnecterClick function to navigate to the login route */}
-          <button onClick={handleConnecterClick} className="appointment-btn scrollto">
-            <span className="d-none d-md-inline">Connecter</span>
-          </button>
+          {/* Use Link to navigate to the login route */}
+          <Link to="/Login" className="appointment-btn scrollto">
+            <span className="d-none d-md-inline" href="connecter">Connecter</span>
+          </Link>
         </div>
       </header>
-      <section id="hero" className="d-flex align-items-center">
-        <div className="container">
-          <h1>Welcome to Protrio</h1>
-          <h2>We are team of talented designers making websites with Bootstrap</h2>
-          <a href="#about" className="btn-get-started scrollto">Get Started</a>
-        </div>
-      </section>
+      
     </div>
   );
 };
 
+
 export default Header;
+
 
 
 
