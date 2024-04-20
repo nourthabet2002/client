@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {useLocation} from 'react-router-dom';
+
 
 
 const Naviger = () => {
   const [avisData, setAvisData] = useState([]);
+  const { state } = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +20,8 @@ const Naviger = () => {
 
     fetchData();
   }, []);
+  const stateEmail = state && state.email; 
+
   return (
     <div>
  <main id="main">
@@ -24,6 +29,8 @@ const Naviger = () => {
   <section id="hero" className="d-flex align-items-center">
         <div className="container">
           <h1>Welcome to Protrio</h1>
+          {/* <h1>Welcome to Protrio{email && `, ${email}`}{stateEmail && `, ${stateEmail}`}</h1> Display both props and state email */}
+
           <h2>We are team of talented designers making websites with Bootstrap</h2>
           <a href="#about" className="btn-get-started scrollto">Get Started</a>
         </div>
