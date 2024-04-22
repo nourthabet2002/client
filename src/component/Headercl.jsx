@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, Routes, Route, BrowserRouter as Router } from 'react-router-dom';
 import Login from './Login';
+import Modifier from './Modifier';
 
-const Header = () => {
+const Headercl = () => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const Header = () => {
               <li><Link to="/"className="nav-link scrollto active">Acceuil</Link></li>
               <li><a className="nav-link scrollto" href="#about">Qui nous sommes</a></li>
               <li><a className="nav-link scrollto" href="#departments">Réservation</a></li>
-              <li><a className="nav-link scrollto" href="#doctors"> avis</a></li>
+              <li><a className="nav-link scrollto" href="#doctors">votre avis</a></li>
               <li className="dropdown">
                 <a href="#services"><span>Services</span> <i className="bi bi-chevron-down" /></a>
                 <ul>
@@ -54,6 +55,9 @@ const Header = () => {
           <Link to="/Login" className="appointment-btn scrollto">
             <span className="d-none d-md-inline" href="connecter">Connecter</span>
           </Link>
+          <Link to="/Modifier" className="appointment-btn scrollto">
+            <span className="d-none d-md-inline" href="profil">profil</span>
+          </Link>
         </div>
       </header>
       
@@ -62,8 +66,4 @@ const Header = () => {
 };
 
 
-export default Header;
-
-
-
-
+export default Headercl;

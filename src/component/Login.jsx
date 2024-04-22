@@ -178,7 +178,7 @@ function Login() {
 
             if (res.data === "exist") {
                 // Navigate to a route that renders both Header and Naviger components
-                navigate("/header_and_naviger");
+                navigate("/headercl_and_navigercl");
             } else if (res.data === "notexist") {
                 alert("User has not signed up");
             }

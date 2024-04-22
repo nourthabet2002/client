@@ -5,6 +5,9 @@ import Naviger from "./component/Naviger";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Login from "./component/Login";
 import Signup from "./component/Signup";
+import Headercl from "./component/Headercl";
+import Modifier from "./component/Modifier";
+import Navigercl from "./component/Navigercl";
 
 function App() {
   return (
@@ -16,7 +19,8 @@ function App() {
             <Route path="/" element={<Naviger />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/header_and_naviger" element={<div><Header /><Naviger /></div>} />
+            <Route path="/headercl_and_navigercl" element={<div><Headercl /><Navigercl /></div>} />
+            <Route path="/Modifier" element={<Modifier />} />
           </Routes>
         </div>
       </Router>
