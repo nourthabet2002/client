@@ -7,6 +7,9 @@ import {useLocation} from 'react-router-dom';
 const Naviger = () => {
   const [avisData, setAvisData] = useState([]);
   const { state } = useLocation();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +24,28 @@ const Naviger = () => {
     fetchData();
   }, []);
   const stateEmail = state && state.email; 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:7000/categorie');
+        setCategories(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div>
@@ -209,28 +234,28 @@ const Naviger = () => {
             <div className="validate" />
           </div>
           <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input type="email" className="form-control" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+            <input type="adresse" className="form-control" name="adresse" id="adresse" placeholder="votre adresse" data-rule="adresse" data-msg="saisir adresse" />
             <div className="validate" />
           </div>
           <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input type="tel" className="form-control" name="phone" id="phone" placeholder="Your Phone" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+            <input type="tel" className="form-control" name="numtel" id="numtel" placeholder="votre numtel" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
             <div className="validate" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-4 form-group mt-3">
-            <input type="datetime" name="date" className="form-control datepicker" id="date" placeholder="Appointment Date" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+            <input type="datetime" name="date" className="form-control datepicker" id="date" placeholder="choisissez la Date" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
             <div className="validate" />
           </div>
           <div className="col-md-4 form-group mt-3">
-            <select name="department" id="department" className="form-select">
-              <option value>Select Department</option>
-              <option value="Department 1">Department 1</option>
-              <option value="Department 2">Department 2</option>
-              <option value="Department 3">Department 3</option>
-            </select>
-            <div className="validate" />
-          </div>
+      <select name="categorie" id="categorie" className="form-select">
+        <option value="">Select Category</option>
+        {categories.map(category => (
+          <option key={category._id} value={category.name}>{category.name}</option>
+        ))}
+      </select>
+      <div className="validate" />
+    </div>
           <div className="col-md-4 form-group mt-3">
             <select name="doctor" id="doctor" className="form-select">
               <option value>Select Doctor</option>
@@ -258,25 +283,29 @@ const Naviger = () => {
   <section id="appointment" className="appointment section-bg">
     <div className="container">
       <div className="section-title">
-        <h2>Make an Appointment</h2>
+        <h2>Votre avis</h2>
         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
       </div>
       <form action="forms/appointment.php" method="post" role="form" className="php-email-form">
         <div className="row">
           <div className="col-md-4 form-group">
-            <input type="text" name="name" className="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+            <input type="text" name="name" className="form-control" id="name" placeholder="votre nom" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
             <div className="validate" />
           </div>
-          <div className="col-md-4 form-group mt-3 mt-md-0">
+          <div className="col-md-4 form-group">
+            <input type="text" name="avis" className="form-control" id="avis" placeholder="partagez avec nous votre avis" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+            <div className="validate" />
+          </div>
+          {/* <div className="col-md-4 form-group mt-3 mt-md-0">
             <input type="email" className="form-control" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
             <div className="validate" />
-          </div>
-          <div className="col-md-4 form-group mt-3 mt-md-0">
+          </div> */}
+          {/* <div className="col-md-4 form-group mt-3 mt-md-0">
             <input type="tel" className="form-control" name="phone" id="phone" placeholder="Your Phone" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
             <div className="validate" />
-          </div>
+          </div> */}
         </div>
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-4 form-group mt-3">
             <input type="datetime" name="date" className="form-control datepicker" id="date" placeholder="Appointment Date" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
             <div className="validate" />
@@ -299,17 +328,17 @@ const Naviger = () => {
             </select>
             <div className="validate" />
           </div>
-        </div>
-        <div className="form-group mt-3">
+        </div> */}
+        {/* <div className="form-group mt-3">
           <textarea className="form-control" name="message" rows={5} placeholder="Message (Optional)" defaultValue={""} />
           <div className="validate" />
-        </div>
-        <div className="mb-3">
+        </div> */}
+        {/* <div className="mb-3">
           <div className="loading">Loading</div>
           <div className="error-message" />
           <div className="sent-message">Your appointment request has been sent successfully. Thank you!</div>
-        </div>
-        <div className="text-center"><button type="submit">Make an Appointment</button></div>
+        </div> */}
+        <div className="text-center"><button type="submit">envoyer</button></div>
       </form>
     </div>
   </section>{/* End Appointment Section */}
