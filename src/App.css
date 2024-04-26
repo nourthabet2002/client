@@ -42,4 +42,6 @@
  align-items: center;
  justify-content: center;
  flex-direction: column;
+}.gallery-item{
+  border: 1px solid black;
 }
