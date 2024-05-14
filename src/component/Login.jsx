@@ -169,6 +169,8 @@ function Login() {
     const navigate = useNavigate(); // Using navigate from useNavigate hook
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [numtel, setNumtel] = useState('');
+    const [adresse, setAdresse] = useState('');
 
     async function submit(e) {
         e.preventDefault();
@@ -176,10 +178,26 @@ function Login() {
         try {
             const res = await axios.post("http://localhost:7000/", { email, password });
 
-            if (res.data === "exist") {
-                // Navigate to a route that renders both Header and Naviger components
+            if (res.data.status === "exist") {
+                console.log('User exists. Storing email, password, numtel, and adresse in local storage...');
+                setEmail(res.data.email);
+                setPassword(res.data.password);
+                setNumtel(res.data.numtel); // Store numtel in state
+                setAdresse(res.data.adresse); // Store adresse in state
+
+                // Store in localStorage as well if needed
+                localStorage.setItem('clientEmail', res.data.email);
+                localStorage.setItem('clientPassword', res.data.password);
+                localStorage.setItem('clientNumtel', res.data.numtel); // Store numtel
+                localStorage.setItem('clientAdresse', res.data.adresse); // Store
+                console.log("Data stored in state and localStorage:", {
+                    email: res.data.email,
+                    password: res.data.password,
+                    numtel: res.data.numtel,
+                    adresse: res.data.adresse
+                });
                 navigate("/headercl_and_navigercl");
-            } else if (res.data === "notexist") {
+            } else if (res.data.status === "notexist") {
                 alert("User has not signed up");
             }
         } catch (e) {
@@ -205,3 +223,20 @@ function Login() {
 }
 
 export default Login;
+// return (
+//     <div className="login-container"> {/* Added className */}
+//         <h1 className="login-title">Login</h1> {/* Added className */}
+//         <form className="login-form" onSubmit={submit}> {/* Added className */}
+//             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="login-input" /> {/* Added className */}
+//             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="login-input" /> {/* Added className */}
+//             <input type="submit" value="Login" className="login-submit-btn" /> {/* Added className */}
+//         </form>
+//         <br />
+//         <p className="login-or">OR</p> {/* Added className */}
+//         <br />
+//         <Link to="/Signup" className="login-signup-link">Signup Page</Link> {/* Added className */}
+//     </div>
+// );
+// }
+
+// export default Login;

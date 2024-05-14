@@ -7,6 +7,7 @@ import {useLocation} from 'react-router-dom';
 const Naviger = () => {
   const [avisData, setAvisData] = useState([]);
   const { state } = useLocation();
+  const [service, setService] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +23,45 @@ const Naviger = () => {
   }, []);
   const stateEmail = state && state.email; 
 
+  // Function to fetch services from the backend
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get('http://localhost:7000/services');
+      setService(response.data);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
+  };
+
+  // useEffect hook to fetch services when the component mounts
+  useEffect(() => {
+    fetchServices();
+  }, []); // Empty dependency array means it will run only once on component mount
+
+  // Function to render services dynamically
+  const renderServices = () => {
+    return service.map((service, index) => (
+      <div key={index} className="icon-box">
+        <div className="icon"><i className="bx bx-fingerprint"></i></div>
+        <h4 className="title"><a href="#">{service.name}</a></h4>
+        <p className="description">
+          {service.categories.map((category, index) => (
+            <span key={index}>{category.name}</span>
+          ))}
+        </p>
+      </div>
+    ));
+  };
+
+  useEffect(() => {
+    // Ensure the DOM is fully loaded before accessing elements
+    const container = document.querySelector('.icon-boxes-container');
+    if (container) {
+      container.innerHTML = ''; // Clear previous content
+      renderServices().forEach(element => container.appendChild(element));
+    }
+  }, [service]);
+
   return (
     <div>
  <main id="main">
@@ -31,8 +71,8 @@ const Naviger = () => {
           <h1>Welcome to Protrio</h1>
           {/* <h1>Welcome to Protrio{email && `, ${email}`}{stateEmail && `, ${stateEmail}`}</h1> Display both props and state email */}
 
-          <h2>We are team of talented designers making websites with Bootstrap</h2>
-          <a href="#about" className="btn-get-started scrollto">Get Started</a>
+          {/* <h2>We are team of talented designers making websites with Bootstrap</h2>
+          <a href="#about" className="btn-get-started scrollto">Get Started</a> */}
         </div>
       </section>
   <section id="why-us" className="why-us">
@@ -40,7 +80,7 @@ const Naviger = () => {
       <div className="row">
         <div className="col-lg-4 d-flex align-items-stretch">
           <div className="content">
-            <h3>Why Choose Protrio?</h3>
+            <h3> Pourquoi choisir Protrio?</h3>
             <p>
             Notre société offre une solution de réservation en ligne facile et pratique pour les services de décoration, plomberie et électricité, permettant aux clients de planifier rapidement et efficacement leurs projets domestiques avec des professionnels qualifiés
             </p>
@@ -52,26 +92,26 @@ const Naviger = () => {
         <div className="col-lg-8 d-flex align-items-stretch">
           <div className="icon-boxes d-flex flex-column justify-content-center">
             <div className="row">
-              <div className="col-xl-4 d-flex align-items-stretch">
+              {/* <div className="col-xl-4 d-flex align-items-stretch">
                 <div className="icon-box mt-4 mt-xl-0">
                   <i className="bx bx-receipt" />
                   <h4>Corporis voluptates sit</h4>
                   <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-xl-4 d-flex align-items-stretch">
-                <div className="icon-box mt-4 mt-xl-0">
+                {/* <div className="icon-box mt-4 mt-xl-0">
                   <i className="bx bx-cube-alt" />
                   <h4>Ullamco laboris ladore pan</h4>
                   <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
-                </div>
+                </div> */}
               </div>
               <div className="col-xl-4 d-flex align-items-stretch">
-                <div className="icon-box mt-4 mt-xl-0">
+                {/* <div className="icon-box mt-4 mt-xl-0">
                   <i className="bx bx-images" />
                   <h4>Labore consequatur</h4>
                   <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>{/* End .content*/}
@@ -88,9 +128,9 @@ const Naviger = () => {
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJXyVq9389rMe3BThExK5j_jAQyWIrCz19HQ&s" alt="Description of the image" />
 </a>
         </div>
-        <div className="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
-          <h3>Enim quis est voluptatibus aliquid consequatur fugiat</h3>
-          <p>Esse voluptas cumque vel exercitationem. Reiciendis est hic accusamus. Non ipsam et sed minima temporibus laudantium. Soluta voluptate sed facere corporis dolores excepturi. Libero laboriosam sint et id nulla tenetur. Suscipit aut voluptate.</p>
+        {/* <div className="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
+          <h3>Protrio</h3>
+          <p>Découvrez Protrio, votre partenaire de confiance pour des réservations en ligne simples et rapides dans les domaines de la décoration, de la plomberie et de l'électricité. Simplifiez vos projets et laissez-nous transformer votre vision en réalité !"</p>
           <div className="icon-box">
             <div className="icon"><i className="bx bx-fingerprint" /></div>
             <h4 className="title"><a href>Lorem Ipsum</a></h4>
@@ -106,7 +146,14 @@ const Naviger = () => {
             <h4 className="title"><a href>Dine Pad</a></h4>
             <p className="description">Explicabo est voluptatum asperiores consequatur magnam. Et veritatis odit. Sunt aut deserunt minus aut eligendi omnis</p>
           </div>
-        </div>
+        </div> */}
+     <div className="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
+    <h3>Protrio</h3>
+    <p>Découvrez Protrio, votre partenaire de confiance pour des réservations en ligne simples et rapides dans les domaines de la décoration, de la plomberie et de l'électricité. Simplifiez vos projets et laissez-nous transformer votre vision en réalité !</p>
+    <div className="icon-boxes-container">
+      {renderServices()} {/* Call the renderServices function */}
+    </div>
+  </div>
       </div>
     </div>
   </section>{/* End About Section */}
@@ -115,33 +162,33 @@ const Naviger = () => {
     <div className="container">
       <div className="row">
         <div className="col-lg-3 col-md-6">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="fas fa-user-md" />
             <span data-purecounter-start={0} data-purecounter-end={85} data-purecounter-duration={1} className="purecounter" />
             <p>Doctors</p>
-          </div>
+          </div> */}
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-md-0">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="far fa-hospital" />
             <span data-purecounter-start={0} data-purecounter-end={18} data-purecounter-duration={1} className="purecounter" />
             <p>Departments</p>
-          </div>
+          </div> */}
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-lg-0">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="fas fa-flask" />
             <span data-purecounter-start={0} data-purecounter-end={12} data-purecounter-duration={1} className="purecounter" />
             <p>Research Labs</p>
-          </div>
+          </div> */}
         </div>
-        <div className="col-lg-3 col-md-6 mt-5 mt-lg-0">
+        {/* <div className="col-lg-3 col-md-6 mt-5 mt-lg-0">
           <div className="count-box">
             <i className="fas fa-award" />
             <span data-purecounter-start={0} data-purecounter-end={150} data-purecounter-duration={1} className="purecounter" />
             <p>Awards</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   </section>{/* End Counts Section */}
@@ -195,27 +242,27 @@ const Naviger = () => {
             </ul>
           </div>
         </div>
-        <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
+        {/* <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
           <div className="icon-box">
             <div className="icon"><i className="fas fa-dna" /></div>
             <h4><a href>Nemo Enim</a></h4>
             <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
           </div>
-        </div>
-        <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
+        </div> */}
+        {/* <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
           <div className="icon-box">
             <div className="icon"><i className="fas fa-wheelchair" /></div>
             <h4><a href>Dele cardo</a></h4>
             <p>Quis consequatur saepe eligendi voluptatem consequatur dolor consequuntur</p>
           </div>
-        </div>
-        <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
+        </div> */}
+        {/* <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
           <div className="icon-box">
             <div className="icon"><i className="fas fa-notes-medical" /></div>
             <h4><a href>Divera don</a></h4>
             <p>Modi nostrum vel laborum. Porro fugit error sit minus sapiente sit aspernatur</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   </section>{/* End Services Section */}
@@ -226,7 +273,7 @@ const Naviger = () => {
         <h2>Make an Appointment</h2>
         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
       </div>
-      <form action="forms/appointment.php" method="post" role="form" className="php-email-form">
+      {/* <form action="forms/appointment.php" method="post" role="form" className="php-email-form">
         <div className="row">
           <div className="col-md-4 form-group">
             <input type="text" name="name" className="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
@@ -275,11 +322,11 @@ const Naviger = () => {
           <div className="sent-message">Your appointment request has been sent successfully. Thank you!</div>
         </div>
         <div className="text-center"><button type="submit">Make an Appointment</button></div>
-      </form>
+      </form> */}
     </div>
   </section>{/* End Appointment Section */}
   {/* ======= Departments Section ======= */}
-  <section id="departments" className="departments">
+  {/* <section id="departments" className="departments">
     <div className="container">
       <div className="section-title">
         <h2>Departments</h2>
@@ -371,28 +418,28 @@ const Naviger = () => {
         </div>
       </div>
     </div>
-  </section>{/* End Departments Section */}
+  </section>End Departments Section */}
   <section id="doctors" className="doctors">
   <div className="container">
 
     <div className="row">
       <div className="col-lg-6 mt-4">
         <div className="member d-flex align-items-start">
-          <div className="pic"><img src="assets/img/doctors/doctors-1.jpg" className="img-fluid" alt="" /></div>
+          {/* <div className="pic"><img src="assets/img/doctors/doctors-1.jpg" className="img-fluid" alt="" /></div> */}
           <div className="member-info">
-  {avisData.map((avis, index) => {
+  {avisData.map((avis) => {
     // Check if clientId exists and contains the nom property
     const clientName = avis.clientId && avis.clientId.nom ? avis.clientId.nom : null;
 
     return (
-      <div key={index}>
+      <div key={avis._id}> {/* Use avis._id as the key */}
         <h4>{clientName}</h4> {/* Display the client's name */}
-        <p>{avis.commentaire}</p>
-        
+        <p>{avis.commentaire}</p> {/* Display the commentaire */}
       </div>
     );
   })}
 </div>
+
 
 
         </div>
@@ -402,7 +449,7 @@ const Naviger = () => {
      
       {/* End Avis Component */}
 
-      <div className="col-lg-6 mt-4 mt-lg-0">
+      {/* <div className="col-lg-6 mt-4 mt-lg-0">
         <div className="member d-flex align-items-start">
           <div className="pic"><img src="assets/img/doctors/doctors-2.jpg" className="img-fluid" alt="" /></div>
           <div className="member-info">
@@ -417,9 +464,9 @@ const Naviger = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="col-lg-6 mt-4">
+      {/* <div className="col-lg-6 mt-4">
         <div className="member d-flex align-items-start">
           <div className="pic"><img src="assets/img/doctors/doctors-3.jpg" className="img-fluid" alt="" /></div>
           <div className="member-info">
@@ -434,8 +481,8 @@ const Naviger = () => {
             </div>
           </div>
         </div>
-      </div>
-
+      </div> */}
+{/* 
       <div className="col-lg-6 mt-4">
         <div className="member d-flex align-items-start">
           <div className="pic"><img src="assets/img/doctors/doctors-4.jpg" className="img-fluid" alt="" /></div>
@@ -451,7 +498,7 @@ const Naviger = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
 
   </div> {/* End container */}
@@ -682,12 +729,12 @@ const Naviger = () => {
             <div className="email">
               <i className="bi bi-envelope" />
               <h4>Email:</h4>
-              <p>info@example.com</p>
+              <p>Protrio@example.com</p>
             </div>
             <div className="phone">
               <i className="bi bi-phone" />
               <h4>Call:</h4>
-              <p>+1 5589 55488 55s</p>
+              <p>+216 25447600</p>
             </div>
           </div>
         </div>
