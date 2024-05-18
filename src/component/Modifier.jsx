@@ -111,6 +111,10 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../App.css';
+import { Navigate } from 'react-router-dom';
+
+const storedId = localStorage.getItem('clientId');
 
 const Modifier = () => {
     const [email, setEmail] = useState(localStorage.getItem('clientEmail') || '');
@@ -125,6 +129,7 @@ const Modifier = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const storedId = localStorage.getItem('clientId');
         const storedEmail = localStorage.getItem('clientEmail');
         const storedPassword = localStorage.getItem('clientPassword');
         const storedNumtel = localStorage.getItem('clientNumtel');
@@ -149,6 +154,7 @@ const Modifier = () => {
     const handleSave = async () => {
         try {
             const res = await axios.put("http://localhost:7000/updateUser", {
+                id: storedId,
                 email: newEmail || email,
                 password: newPassword || password,
                 numtel: newNumtel || numtel,
@@ -169,13 +175,14 @@ const Modifier = () => {
             setError("Error updating user. Please try again."); // Set error state
             setIsEditMode(false);
         }
+        window.location.reload(); 
     };
 
     return (
-        <div style={{ marginTop: '100px' }}>
+        <div style={{ marginTop: '250px', border: '4px solid black', width:"500px" , margin: "200px auto" }}>
             <h1>Bienvenue</h1>
             {!isEditMode ? (
-                <div>
+                <div >
                     <p>Email: {email}</p>
                     <p>Password: {password}</p>
                     <p>Numéro de téléphone: {numtel}</p>

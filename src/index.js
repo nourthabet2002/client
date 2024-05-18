@@ -18,7 +18,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App'; // Assuming App is your root component
-
+import './App.css';
 const root = document.getElementById('root');
 
 // Update ReactDOM.render to use createRoot

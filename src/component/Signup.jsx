@@ -393,6 +393,7 @@ function Signup() {
     }
 
     return (
+        <div style={{ marginTop: '200px', border: '4px solid black', width:"650px" , margin: "0 auto" ,marginBottom:"15000px", padding:"5px"}}>
         <div className="login">
             <h1>Signup</h1>
             <form onSubmit={submit}>
@@ -440,6 +441,7 @@ function Signup() {
             <br />
             <Link to="/Login">Login Page</Link>
         </div>
+     </div>
     );
 }
 

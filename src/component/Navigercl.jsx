@@ -4,7 +4,7 @@ import {useLocation} from 'react-router-dom';
 
 
 
-const Naviger = () => {
+const Naviger = ({ nom }) => {
   const [avisData, setAvisData] = useState([]);
   const { state } = useLocation();
   const [categories, setCategories] = useState([]);
@@ -16,8 +16,10 @@ const Naviger = () => {
     date: '',
     lieu: '',
     categorieId: '',
-    clientId: ''
+    clientId: '',
+    nom:''
   });
+  const clientId = localStorage.getItem('clientId');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +70,6 @@ const Naviger = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-
     try {
       const response = await axios.post('http://localhost:7000/resclient/add', formData);
       console.log(response.data); // Log the response from the server
@@ -77,7 +78,8 @@ const Naviger = () => {
         date: '',
         lieu: '',
         categorieId: '',
-        clientId: ''
+        clientId: localStorage.getItem('clientId'),
+        nom:''
       });
     } catch (error) {
       console.error('Error:', error);
@@ -100,9 +102,10 @@ const Naviger = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
-
-  
+  const StorageName = localStorage.getItem('clientNom');
+  const   StorageAdresse  = localStorage.getItem('clientAdresse');
+  const   StorageNumtel  = localStorage.getItem('clientNumtel');
+  console.log("Nom value:", nom);
   return (
     <div>
  <main id="main">
@@ -203,18 +206,18 @@ const Naviger = () => {
           </div>
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-md-0">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="far fa-hospital" />
             <span data-purecounter-start={0} data-purecounter-end={18} data-purecounter-duration={1} className="purecounter" />
             <p>Departments</p>
-          </div>
+          </div> */}
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-lg-0">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="fas fa-flask" />
             <span data-purecounter-start={0} data-purecounter-end={12} data-purecounter-duration={1} className="purecounter" />
             <p>Research Labs</p>
-          </div>
+          </div> */}
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-lg-0">
           <div className="count-box">
@@ -301,20 +304,34 @@ const Naviger = () => {
         <h2>Make an Appointment</h2>
         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
       </div>
-      <form action="forms/appointment.php" method="post" role="form" className="php-email-form">
+      <form onSubmit={handleFormSubmit} className="php-email-form">
         <div className="row">
-          {/* <div className="col-md-4 form-group">
-            <input type="text" name="name" className="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div> */}
+        <div className="col-md-4 form-group">
+        <input
+            type="text"
+            name="name"
+            className="form-control"
+            id="name"
+            placeholder={StorageName}
+            data-rule="minlen:4"
+            data-msg="Please enter at least 4 chars"
+            value={StorageName}
+            onChange={(e) => {}} 
+        />
+
+    
+    <div className="validate" />
+</div>
+
           <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input type="adresse" className="form-control" name="adresse" id="adresse" placeholder="votre adresse" data-rule="adresse" data-msg="saisir adresse" />
+            <input             value={StorageAdresse}
+            type="adresse" className="form-control" name="adresse" id="adresse" placeholder="votre adresse" data-rule="adresse" data-msg="saisir adresse" />
             <div className="validate" />
           </div>
-          {/* <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input type="tel" className="form-control" name="numtel" id="numtel" placeholder="votre numtel" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+          <div className="col-md-4 form-group mt-3 mt-md-0">
+            <input  value={StorageNumtel}type="tel" className="form-control" name="numtel" id="numtel" placeholder="votre numtel" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
             <div className="validate" />
-          </div> */}
+          </div>
         </div>
         <div className="row">
           <div className="col-md-4 form-group mt-3">
@@ -325,7 +342,7 @@ const Naviger = () => {
       <select name="categorie" id="categorie" className="form-select">
         <option value="">Select Category</option>
         {categories.map(category => (
-          <option key={category._id} value={category.name}>{category.name}</option>
+          <option key={category._id} value={category._id}>{category.name}</option>
         ))}
       </select>
       <div className="validate" />
@@ -356,16 +373,16 @@ const Naviger = () => {
           </div> */}
           
         </div>
-        <div className="form-group mt-3">
+        {/* <div className="form-group mt-3">
           <textarea className="form-control" name="message" rows={5} placeholder="Message (Optional)" defaultValue={""} />
           <div className="validate" />
-        </div>
-        <div className="mb-3">
+        </div> */}
+        {/* <div className="mb-3">
           <div className="loading">Loading</div>
           <div className="error-message" />
           <div className="sent-message">Your appointment request has been sent successfully. Thank you!</div>
-        </div>
-        <div className="text-center"><button type="submit">Make an Appointment</button></div>
+        </div> */}
+        <div className="text-center"><button type="submit">Réserver</button></div>
       </form>
     </div>
   </section>{/* End Services Section */}

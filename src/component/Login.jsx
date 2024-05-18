@@ -161,9 +161,10 @@
 // export default Login;
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import '../App.css';
 
 function Login() {
     const navigate = useNavigate(); // Using navigate from useNavigate hook
@@ -171,12 +172,26 @@ function Login() {
     const [password, setPassword] = useState('');
     const [numtel, setNumtel] = useState('');
     const [adresse, setAdresse] = useState('');
+    const [nom, setNom] = useState('');
+
+
+    useEffect(() => {
+        const storedNom = localStorage.getItem('clientNom');
+        if (storedNom) {
+            setNom(storedNom);
+            console.log("Nom value set:", storedNom); // Log the nom value after setting
+        }
+    }, []);
+
+
+
 
     async function submit(e) {
         e.preventDefault();
 
         try {
             const res = await axios.post("http://localhost:7000/", { email, password });
+            console.log('Server response:', res.data);
 
             if (res.data.status === "exist") {
                 console.log('User exists. Storing email, password, numtel, and adresse in local storage...');
@@ -184,17 +199,20 @@ function Login() {
                 setPassword(res.data.password);
                 setNumtel(res.data.numtel); // Store numtel in state
                 setAdresse(res.data.adresse); // Store adresse in state
-
+                setNom(res.data.nom);
                 // Store in localStorage as well if needed
+                localStorage.setItem('clientId', res.data.id);
                 localStorage.setItem('clientEmail', res.data.email);
                 localStorage.setItem('clientPassword', res.data.password);
                 localStorage.setItem('clientNumtel', res.data.numtel); // Store numtel
                 localStorage.setItem('clientAdresse', res.data.adresse); // Store
+                localStorage.setItem('clientNom', res.data.nom);
                 console.log("Data stored in state and localStorage:", {
                     email: res.data.email,
                     password: res.data.password,
                     numtel: res.data.numtel,
-                    adresse: res.data.adresse
+                    adresse: res.data.adresse,
+                    nom: res.data.nom
                 });
                 navigate("/headercl_and_navigercl");
             } else if (res.data.status === "notexist") {
@@ -205,13 +223,31 @@ function Login() {
             console.log(e);
         }
     }
+    const Navigercl = ({ nom }) => (
+        <div>
+            <input
+                type="text"
+                name="name"
+                className="form-control"
+                id="name"
+                placeholder="Your Name"
+                data-rule="minlen:4"
+                data-msg="Please enter at least 4 chars"
+                value={nom}
+                onChange={(e) => {}} 
+            />
+            {/* Other content of the Navigercl component */}
+        </div>
+    );
 
     return (
+        <div style={{ marginTop: '200px', border: '4px solid black', width:"450px" , margin: "0 auto" ,marginBottom:"15000px", padding:"5px"}}>
         <div className="login">
             <h1>Login</h1>
             <form onSubmit={submit}>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+                {/* <Navigercl nom={nom} /> */}
                 <input type="submit" value="Login" />
             </form>
             <br />
@@ -219,6 +255,7 @@ function Login() {
             <br />
             <Link to="/Signup">Signup Page</Link>
         </div>
+    </div>
     );
 }
 
