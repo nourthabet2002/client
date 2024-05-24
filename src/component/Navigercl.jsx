@@ -1,111 +1,122 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import FlipCard from './FlipCard';
+import Avisform from './Avisform';
 import {useLocation} from 'react-router-dom';
 
 
-
 const Naviger = ({ nom }) => {
-  const [avisData, setAvisData] = useState([]);
-  const { state } = useLocation();
   const [categories, setCategories] = useState([]);
   const [services, setServices] = useState([]);
+  const [service, setService] = useState([]);
   const [selectedService, setSelectedService] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
+  const [formData, setFormData] = useState({
+      name: localStorage.getItem('clientNom'),
+      adresse: localStorage.getItem('clientAdresse'),
+      numtel: localStorage.getItem('clientNumtel'),
+      date: '',
+      categorieId: '',
+      serviceId: '',
+      clientId:localStorage.getItem('clientId'),
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({
-    date: '',
-    lieu: '',
-    categorieId: '',
-    clientId: '',
-    nom:''
-  });
-  const clientId = localStorage.getItem('clientId');
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:7000/avis');
-        setAvisData(response.data);
-      } catch (error) {
-        console.error('Error fetching avis:', error);
-      }
-    };
-
-    fetchData();
+      const fetchData = async () => {
+          try {
+              const categoryResponse = await axios.get('http://localhost:7000/categorie');
+              setCategories(categoryResponse.data);
+              const serviceResponse = await axios.get('http://localhost:7000/service');
+              setServices(serviceResponse.data);
+              setLoading(false);
+          } catch (error) {
+              console.error('Error fetching data:', error);
+              setError(error.message);
+              setLoading(false);
+          }
+      };
+      fetchData();
   }, []);
-
-  const stateEmail = state && state.email;
-
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('http://localhost:7000/categorie');
-        setCategories(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
 
-    fetchCategories();
+    setCurrentDate(formattedDate);
   }, []);
-
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await axios.get('http://localhost:7000/service');
-        setServices(response.data);
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      }
-    };
-
-    fetchServices();
+    // Fetch data from your backend endpoint
+    axios.get('http://localhost:7000/servicessss')
+      .then(response => {
+        setService(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error fetching the services!', error);
+      });
   }, []);
-
-  const handleServiceChange = (event) => {
-    setSelectedService(event.target.value);
+  const handleInputChange = (event) => {
+      const { name, value } = event.target;
+      setFormData(prevFormData => ({
+          ...prevFormData,
+          [name]: value
+      }));
   };
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    try {
-      const response = await axios.post('http://localhost:7000/resclient/add', formData);
-      console.log(response.data); // Log the response from the server
-      // Optionally, you can reset the form after successful submission
-      setFormData({
-        date: '',
-        lieu: '',
-        categorieId: '',
-        clientId: localStorage.getItem('clientId'),
-        nom:''
-      });
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle errors if needed
-    }
+      event.preventDefault();
+      try {
+          const response = await axios.post('http://localhost:7000/resclient/add', formData);
+          console.log('Server response:', response.data);
+          // Reset form data or navigate to another page
+      } catch (error) {
+          console.error('Error posting form data:', error);
+      }
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value
+  
+  function AvisForm() {
+    const [avisData, setAvisData] = useState({
+        commentaire: '',
+        date: new Date().toISOString().split('T')[0]  // Defaults to today's date
     });
-  };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+    const handleAvisChange = (event) => {
+        const { name, value } = event.target;
+        setAvisData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-  const StorageName = localStorage.getItem('clientNom');
-  const   StorageAdresse  = localStorage.getItem('clientAdresse');
-  const   StorageNumtel  = localStorage.getItem('clientNumtel');
-  console.log("Nom value:", nom);
+    const handleAvisSubmit = async (event) => {
+        event.preventDefault();
+        const clientId = localStorage.getItem('clientId');  // Get clientId from localStorage
+        if (!clientId) {
+            console.error('Client ID is missing');
+            return;
+        }
+        try {
+            const response = await axios.post('http://localhost:7000/avis/add', {
+                ...avisData,
+                clientId: clientId
+            });
+            console.log('Avis added:', response.data);
+            // Reset avis form or handle further
+            setAvisData({ commentaire: '', date: new Date().toISOString().split('T')[0] });
+        } catch (error) {
+            console.error('Failed to submit avis:', error);
+        }
+      };
+      if (loading) return <div>Loading...</div>;
+      if (error) return <div>Error: {error}</div>;
+    
+    }
+   
+
   return (
     <div>
  <main id="main">
@@ -136,26 +147,26 @@ const Naviger = ({ nom }) => {
         <div className="col-lg-8 d-flex align-items-stretch">
           <div className="icon-boxes d-flex flex-column justify-content-center">
             <div className="row">
-              <div className="col-xl-4 d-flex align-items-stretch">
+              {/* <div className="col-xl-4 d-flex align-items-stretch">
                 <div className="icon-box mt-4 mt-xl-0">
                   <i className="bx bx-receipt" />
                   <h4>Corporis voluptates sit</h4>
                   <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
                 </div>
-              </div>
+              </div> */}
               <div className="col-xl-4 d-flex align-items-stretch">
-                <div className="icon-box mt-4 mt-xl-0">
+                {/* <div className="icon-box mt-4 mt-xl-0">
                   <i className="bx bx-cube-alt" />
                   <h4>Ullamco laboris ladore pan</h4>
                   <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
-                </div>
+                </div> */}
               </div>
               <div className="col-xl-4 d-flex align-items-stretch">
-                <div className="icon-box mt-4 mt-xl-0">
+                {/* <div className="icon-box mt-4 mt-xl-0">
                   <i className="bx bx-images" />
                   <h4>Labore consequatur</h4>
                   <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>{/* End .content*/}
@@ -173,23 +184,23 @@ const Naviger = ({ nom }) => {
 </a>
         </div>
         <div className="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
-          <h3>Enim quis est voluptatibus aliquid consequatur fugiat</h3>
-          <p>Esse voluptas cumque vel exercitationem. Reiciendis est hic accusamus. Non ipsam et sed minima temporibus laudantium. Soluta voluptate sed facere corporis dolores excepturi. Libero laboriosam sint et id nulla tenetur. Suscipit aut voluptate.</p>
-          <div className="icon-box">
+          <h3>Protrio</h3>
+          <p>Découvrez Protrio, votre partenaire de confiance pour des réservations en ligne simples et rapides dans les domaines de la décoration, de la plomberie et de l'électricité. Simplifiez vos projets et laissez-nous transformer votre vision en réalité !</p>
+          {/* <div className="icon-box">
             <div className="icon"><i className="bx bx-fingerprint" /></div>
             <h4 className="title"><a href>Lorem Ipsum</a></h4>
             <p className="description">Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
-          </div>
-          <div className="icon-box">
+          </div> */}
+          {/* <div className="icon-box">
             <div className="icon"><i className="bx bx-gift" /></div>
             <h4 className="title"><a href>Nemo Enim</a></h4>
             <p className="description">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque</p>
-          </div>
-          <div className="icon-box">
+          </div> */}
+          {/* <div className="icon-box">
             <div className="icon"><i className="bx bx-atom" /></div>
             <h4 className="title"><a href>Dine Pad</a></h4>
             <p className="description">Explicabo est voluptatum asperiores consequatur magnam. Et veritatis odit. Sunt aut deserunt minus aut eligendi omnis</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -199,11 +210,11 @@ const Naviger = ({ nom }) => {
     <div className="container">
       <div className="row">
         <div className="col-lg-3 col-md-6">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="fas fa-user-md" />
             <span data-purecounter-start={0} data-purecounter-end={85} data-purecounter-duration={1} className="purecounter" />
             <p>Doctors</p>
-          </div>
+          </div> */}
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-md-0">
           {/* <div className="count-box">
@@ -220,12 +231,13 @@ const Naviger = ({ nom }) => {
           </div> */}
         </div>
         <div className="col-lg-3 col-md-6 mt-5 mt-lg-0">
-          <div className="count-box">
+          {/* <div className="count-box">
             <i className="fas fa-award" />
             <span data-purecounter-start={0} data-purecounter-end={150} data-purecounter-duration={1} className="purecounter" />
             <p>Awards</p>
-          </div>
+          </div> */}
         </div>
+        
       </div>
     </div>
   </section>{/* End Counts Section */}
@@ -277,113 +289,134 @@ const Naviger = ({ nom }) => {
           </div>
         </div>
         <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
-          <div className="icon-box">
+          {/* <div className="icon-box">
             <div className="icon"><i className="fas fa-dna" /></div>
             <h4><a href>Nemo Enim</a></h4>
             <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
-          </div>
+          </div> */}
+          
         </div>
         <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
-          <div className="icon-box">
+          {/* <div className="icon-box">
             <div className="icon"><i className="fas fa-wheelchair" /></div>
             <h4><a href>Dele cardo</a></h4>
             <p>Quis consequatur saepe eligendi voluptatem consequatur dolor consequuntur</p>
-          </div>
+          </div> */}
         </div>
         <div className="col-lg-4 col-md-6 d-flex align-items-stretch mt-4">
-          <div className="icon-box">
+          {/* <div className="icon-box">
             <div className="icon"><i className="fas fa-notes-medical" /></div>
             <h4><a href>Divera don</a></h4>
             <p>Modi nostrum vel laborum. Porro fugit error sit minus sapiente sit aspernatur</p>
-          </div>
+          </div> */}
         </div>
+        
       </div>
+      
     </div>
+    
     <div className="container">
       <div className="section-title">
         <h2>Make an Appointment</h2>
         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
       </div>
-      <form onSubmit={handleFormSubmit} className="php-email-form">
-        <div className="row">
-        <div className="col-md-4 form-group">
-        <input
-            type="text"
-            name="name"
-            className="form-control"
-            id="name"
-            placeholder={StorageName}
-            data-rule="minlen:4"
-            data-msg="Please enter at least 4 chars"
-            value={StorageName}
-            onChange={(e) => {}} 
-        />
 
-    
-    <div className="validate" />
-</div>
 
-          <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input             value={StorageAdresse}
-            type="adresse" className="form-control" name="adresse" id="adresse" placeholder="votre adresse" data-rule="adresse" data-msg="saisir adresse" />
-            <div className="validate" />
-          </div>
-          <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input  value={StorageNumtel}type="tel" className="form-control" name="numtel" id="numtel" placeholder="votre numtel" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-4 form-group mt-3">
-            <input type="datetime" name="date" className="form-control datepicker" id="date" placeholder="choisissez la Date" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div>
-          <div className="col-md-4 form-group mt-3">
-      <select name="categorie" id="categorie" className="form-select">
-        <option value="">Select Category</option>
-        {categories.map(category => (
-          <option key={category._id} value={category._id}>{category.name}</option>
-        ))}
-      </select>
-      <div className="validate" />
-    </div>
-    <div className="col-md-4 form-group mt-3">
-        <select
-          name="service"
-          id="service"
-          className="form-select"
-          value={selectedService}
-          onChange={handleServiceChange}
-        >
-          <option value="">Select Service</option>
-          {services.map((service) => (
-            <option key={service._id} value={service._id}>{service.name}</option>
-          ))}
-        </select>
-        <div className="validate" />
-      </div>
-          {/* <div className="col-md-4 form-group mt-3">
-            <select name="doctor" id="doctor" className="form-select">
-              <option value>Select Doctor</option>
-              <option value="Doctor 1">Doctor 1</option>
-              <option value="Doctor 2">Doctor 2</option>
-              <option value="Doctor 3">Doctor 3</option>
-            </select>
-            <div className="validate" />
-          </div> */}
-          
-        </div>
-        {/* <div className="form-group mt-3">
-          <textarea className="form-control" name="message" rows={5} placeholder="Message (Optional)" defaultValue={""} />
-          <div className="validate" />
-        </div> */}
-        {/* <div className="mb-3">
-          <div className="loading">Loading</div>
-          <div className="error-message" />
-          <div className="sent-message">Your appointment request has been sent successfully. Thank you!</div>
-        </div> */}
-        <div className="text-center"><button type="submit">Réserver</button></div>
-      </form>
+  {/* ======= Reservatuon Section ======= */}
+
+
+  <form onSubmit={handleFormSubmit} className="php-email-form">
+            <div className="row">
+                <div className="col-md-4 form-group">
+                    <input
+                        type="text"
+                        name="name"
+                        className="form-control"
+                        id="name"
+                        placeholder="Your Name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                    />
+                    <div className="validate" />
+                </div>
+                <div className="col-md-4 form-group mt-3 mt-md-0">
+                    <input
+                        value={formData.adresse}
+                        type="text"
+                        className="form-control"
+                        name="adresse"
+                        id="adresse"
+                        placeholder="Votre adresse"
+                        onChange={handleInputChange}
+                    />
+                    <div className="validate" />
+                </div>
+                <div className="col-md-4 form-group mt-3 mt-md-0">
+                    <input
+                        value={formData.numtel}
+                        type="tel"
+                        className="form-control"
+                        name="numtel"
+                        id="numtel"
+                        placeholder="Votre numtel"
+                        onChange={handleInputChange}
+                    />
+                    <div className="validate" />
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-4 form-group mt-3">
+                    <input
+                        type="datetime"
+                        name="date"
+                        className="form-control datepicker"
+                        id="date"
+                        placeholder="Choisissez la Date"
+                        onChange={handleInputChange}
+                    />
+                    <div className="validate" />
+                </div>
+                <div className="col-md-4 form-group mt-3">
+                    <select
+                        name="categorieId"
+                        id="categorie"
+                        className="form-select"
+                        value={formData.categorieId}
+                        onChange={handleInputChange}
+                    >
+                        <option value="">Select Category</option>
+                        {categories.map(category => (
+                            <option key={category._id} value={category._id}>{category.name}</option>
+                        ))}
+                    </select>
+                    <div className="validate" />
+                </div>
+                <div className="col-md-4 form-group mt-3">
+                    <select
+                        name="serviceId"
+                        id="service"
+                        className="form-select"
+                        value={formData.serviceId}
+                        onChange={handleInputChange}
+                    >
+                        <option value="">Select Service</option>
+                        {services.map(service => (
+                            <option key={service._id} value={service._id}>{service.name}</option>
+                        ))}
+                    </select>
+                    <div className="validate" />
+                </div>
+            </div>
+            <div className="text-center">
+                <button type="submit">Réserver</button>
+            </div>
+        </form>
+
+
+
+
+
+
     </div>
   </section>{/* End Services Section */}
   {/* ======= Appointment Section ======= */}
@@ -393,60 +426,7 @@ const Naviger = ({ nom }) => {
         <h2>Votre avis</h2>
         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
       </div>
-      <form action="forms/appointment.php" method="post" role="form" className="php-email-form">
-        <div className="row">
-          <div className="col-md-4 form-group">
-            <input type="text" name="name" className="form-control" id="name" placeholder="votre nom" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div>
-          <div className="col-md-4 form-group">
-            <input type="text" name="avis" className="form-control" id="avis" placeholder="partagez avec nous votre avis" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div>
-          {/* <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input type="email" className="form-control" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
-            <div className="validate" />
-          </div> */}
-          {/* <div className="col-md-4 form-group mt-3 mt-md-0">
-            <input type="tel" className="form-control" name="phone" id="phone" placeholder="Your Phone" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div> */}
-        </div>
-        {/* <div className="row">
-          <div className="col-md-4 form-group mt-3">
-            <input type="datetime" name="date" className="form-control datepicker" id="date" placeholder="Appointment Date" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-            <div className="validate" />
-          </div>
-          <div className="col-md-4 form-group mt-3">
-            <select name="department" id="department" className="form-select">
-              <option value>Select Department</option>
-              <option value="Department 1">Department 1</option>
-              <option value="Department 2">Department 2</option>
-              <option value="Department 3">Department 3</option>
-            </select>
-            <div className="validate" />
-          </div>
-          <div className="col-md-4 form-group mt-3">
-            <select name="doctor" id="doctor" className="form-select">
-              <option value>Select Doctor</option>
-              <option value="Doctor 1">Doctor 1</option>
-              <option value="Doctor 2">Doctor 2</option>
-              <option value="Doctor 3">Doctor 3</option>
-            </select>
-            <div className="validate" />
-          </div>
-        </div> */}
-        {/* <div className="form-group mt-3">
-          <textarea className="form-control" name="message" rows={5} placeholder="Message (Optional)" defaultValue={""} />
-          <div className="validate" />
-        </div> */}
-        {/* <div className="mb-3">
-          <div className="loading">Loading</div>
-          <div className="error-message" />
-          <div className="sent-message">Your appointment request has been sent successfully. Thank you!</div>
-        </div> */}
-        <div className="text-center"><button type="submit">envoyer</button></div>
-      </form>
+      <Avisform />
     </div>
   </section>End Appointment Section
   {/* ======= Departments Section ======= */}
@@ -454,7 +434,7 @@ const Naviger = ({ nom }) => {
 
 
   <section id="departments" className="departments">
-    <div className="container">
+    {/* <div className="container">
       <div className="section-title">
         <h2>Departments</h2>
         <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
@@ -544,7 +524,7 @@ const Naviger = ({ nom }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div> */}
   </section>{/* End Departments Section */}
   {/* ======= Doctors Section ======= */}
   {/* <section id="doctors" className="doctors">

@@ -32,12 +32,12 @@ const Headercl = () => {
       </div>
       <header id="header" className="fixed-top">
         <div className="container d-flex align-items-center">
-          <h1 className="logo me-auto"><a href="index.html">Protrio</a></h1>
+          <h1 className="logo me-auto"><a href="index.html"></a><img src="/img/image.png" alt="Image" /></h1>
           <nav id="navbar" className="navbar order-last order-lg-0">
             <ul>
               <li><Link to="/"className="nav-link scrollto active">Acceuil</Link></li>
               <li><a className="nav-link scrollto" href="#about">Qui nous sommes</a></li>
-              <li><a className="nav-link scrollto" href="#departments">Réservation</a></li>
+              <li><Link to="/headercl_and_Reservationcl"className="nav-link scrollto active">Reservation</Link></li>
               <li><a className="nav-link scrollto" href="#doctors">votre avis</a></li>
               <li className="dropdown">
                 <a href="#services"><span>Services</span> <i className="bi bi-chevron-down" /></a>

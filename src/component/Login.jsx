@@ -241,7 +241,7 @@ function Login() {
     );
 
     return (
-        <div style={{ marginTop: '200px', border: '4px solid black', width:"450px" , margin: "0 auto" ,marginBottom:"15000px", padding:"5px"}}>
+        <div style={{ marginTop: '250px', border: '4px solid black', width:"450px" , margin: "200px auto" }}>
         <div className="login">
             <h1>Login</h1>
             <form onSubmit={submit}>

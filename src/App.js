@@ -8,7 +8,7 @@ import Signup from "./component/Signup";
 import Headercl from "./component/Headercl";
 import Modifier from "./component/Modifier";
 import Navigercl from "./component/Navigercl";
-
+import Reservationcl from "./component/Reservationcl";
 
 export function onEnter(nextState, transition, callback) {
   console.log("test");
@@ -34,6 +34,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/headercl_and_navigercl" element={<div><Headercl /><Navigercl /></div>} />
             <Route path="/Modifier" element={<Modifier />} />
+            <Route path="/headercl_and_ReservationCl" element={<div><Headercl /><Reservationcl /></div>} />
           </Routes>
         </div>
       </Router>
