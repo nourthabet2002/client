@@ -27,13 +27,13 @@ function App() {
     <div className="App">
       <Router>
         <div>
-          <Header />
+          {/* <Header /> */}
           <Routes>
-            <Route path="/" element={<Naviger />} onEnter={onEnter} />
+            <Route path="/" element={<div><Header /><Naviger /></div>} onEnter={onEnter} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/headercl_and_navigercl" element={<div><Headercl /><Navigercl /></div>} />
-            <Route path="/Modifier" element={<Modifier />} />
+            <Route path="/Modifier" element={<div><Headercl /><Modifier /></div>} />
             <Route path="/headercl_and_ReservationCl" element={<div><Headercl /><Reservationcl /></div>} />
           </Routes>
         </div>

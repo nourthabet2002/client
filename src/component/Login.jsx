@@ -216,10 +216,10 @@ function Login() {
                 });
                 navigate("/headercl_and_navigercl");
             } else if (res.data.status === "notexist") {
-                alert("User has not signed up");
+                alert("Utilisateur n'est pas encore enrigistré");
             }
         } catch (e) {
-            alert("Wrong details");
+            alert("Login au Mot de passe invalide!!");
             console.log(e);
         }
     }
@@ -243,7 +243,7 @@ function Login() {
     return (
         <div style={{ marginTop: '250px', border: '4px solid black', width:"450px" , margin: "200px auto" }}>
         <div className="login">
-            <h1>Login</h1>
+            <h1>Se connecter</h1>
             <form onSubmit={submit}>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
@@ -251,9 +251,9 @@ function Login() {
                 <input type="submit" value="Login" />
             </form>
             <br />
-            <p>OR</p>
+            <p>Ou si vous n'avez pas de compte cliquez sur le lien  dessous</p>
             <br />
-            <Link to="/Signup">Signup Page</Link>
+            <Link to="/Signup">S'enrigistrer</Link>
         </div>
     </div>
     );

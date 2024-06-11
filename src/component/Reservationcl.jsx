@@ -162,7 +162,7 @@ function Reservationcl() {
                 <ul style={styles.list}>
                     {projects.map(project => (
                         <li key={project._id} style={styles.listItem}>
-                            {project.adresse} de {project.datedebut} catégorie {getCategoryName(project.categorieId)}
+                            {project.adresse} de {project.datedebut} catégorie {getCategoryName(project.categorieId)} etat{project.etat}
                         </li>
                     ))}
                 </ul>
@@ -213,5 +213,6 @@ const styles = {
 };
 
 export default Reservationcl;
+
 
                        

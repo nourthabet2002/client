@@ -192,12 +192,12 @@ const Modifier = () => {
             ) : (
                 <div>
                     <label>
-                        New Email:
+                         Email:
                         <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
                     </label>
                     <br />
                     <label>
-                        New Password:
+                         Password:
                         <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                     </label>
                     <br />

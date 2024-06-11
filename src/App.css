@@ -294,7 +294,15 @@ p.error {
 }.login form input[type=submit] {
   background-color: #2617f7fa;
   color: #f9f9f9;
+}.col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0{
+  display: flex;
+}.success-message {
+  color: green;
+  padding: 10px;
+  
+  margin-top: 10px;
 }
+
 
 
 

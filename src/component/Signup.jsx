@@ -381,21 +381,24 @@ function Signup() {
             });
 
             if (res.data === "exist") {
-                setError("User already exists");
+                setError("utilisteur existe déja");
             } else if (res.data === "notexist") {
                 // Navigate to a route that renders both Header and Naviger components
                 navigate("/header_and_naviger", { state: { id: email } });
-            }
-        } catch (e) {
+            } } catch (error) {
+                if (error.response && error.response.status === 400) {
+                    setError("Numéro de téléphone doit être composé de 8 chiffres.");
+        } else {
             setError("Something went wrong");
-            console.error(e);
+            console.error(error);
+        }
         }
     }
 
     return (
         <div style={{ marginTop: '200px', border: '4px solid black', width:"650px" , margin: "0 auto" ,marginBottom:"15000px", padding:"5px"}}>
         <div className="login">
-            <h1>Signup</h1>
+            <h1>Enrigistrer</h1>
             <form onSubmit={submit}>
                 <input
                     type="text"

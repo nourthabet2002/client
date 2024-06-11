@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
-function Avisform() {
+import '../App.css';
+function Avisform({ setSuccessMessage }) {
   const [avisData, setAvisData] = useState({
       commentaire: '',
       date: new Date().toISOString().split('T')[0] // Defaults to today's date
@@ -28,6 +28,7 @@ function Avisform() {
               clientId: clientId
           });
           console.log('Avis added:', response.data);
+          setSuccessMessage('Avis ajouté avec succée!');
           // Reset avis form or handle further
           setAvisData({ commentaire: '', date: new Date().toISOString().split('T')[0] });
       } catch (error) {
@@ -68,7 +69,15 @@ function Avisform() {
           <div className="text-center">
               <button type="submit">Envoyer</button>
           </div>
+          {setSuccessMessage && (
+              <p className="success-message">
+                  {setSuccessMessage}
+              </p>
+          )}
       </form>
+    
+      
+
   );
 }
 
